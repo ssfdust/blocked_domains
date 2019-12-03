@@ -36,7 +36,7 @@ import trio
 import httpx
 
 from httpx.concurrency.trio import TrioBackend
-from httpx.exceptions import ConnectTimeout, PoolTimeout
+from httpx.exceptions import ConnectTimeout, PoolTimeout, ReadTimeout
 from httpx.config import PoolLimits, TimeoutConfig
 
 from h2.exceptions import StreamClosedError
@@ -96,6 +96,7 @@ class Crawler:
             StreamClosedError,
             PoolTimeout,
             ssl.SSLError,
+            ReadTimeout,
         ):
             logger.error("%s 爬取失败 即将重试 第%d次" % (self.url, cnt + 1))
             await trio.sleep(0.5)
