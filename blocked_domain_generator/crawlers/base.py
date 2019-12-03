@@ -62,7 +62,7 @@ limit = trio.CapacityLimiter(4)
 global_client = httpx.Client(
     backend=TrioBackend(),
     timeout=TIMEOUT,
-    pool_limits=PoolLimits(soft_limit=4, hard_limit=6, pool_timeout=0.5),
+    pool_limits=PoolLimits(soft_limit=4, hard_limit=100, pool_timeout=60),
 )
 
 
@@ -73,16 +73,17 @@ class Crawler:
         self.client = client
 
     async def load_website(self):
-        logger.info("爬取 %s" % self.url)
         async with self.client as client:
-            await trio.sleep(random.random())
-            for cnt in range(0, MAX_TRIES):
-                state = await self._single_request(client, cnt)
-                if state is RequestState.Ok:
-                    break
-            else:
-                logger.error("%s 爬取彻底失败" % self.url)
-                raise RuntimeError("爬取失败")
+            async with limit:
+                await trio.sleep(random.random())
+                logger.info("爬取 %s" % self.url)
+                for cnt in range(0, MAX_TRIES):
+                    state = await self._single_request(client, cnt)
+                    if state is RequestState.Ok:
+                        break
+                else:
+                    logger.error("%s 爬取彻底失败" % self.url)
+                    raise RuntimeError("爬取失败")
 
     async def _single_request(self, client: httpx.Client, cnt: int = 0):
         try:
