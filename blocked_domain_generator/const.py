@@ -41,7 +41,7 @@ DATA_KEY = "data-category-link"
 
 MAX_TRIES = 3
 
-TIMEOUT = 60
+TIMEOUT = 6
 
 TOO_MANY_REQUESTS = 429
 
