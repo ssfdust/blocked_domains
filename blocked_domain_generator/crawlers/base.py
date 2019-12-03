@@ -37,7 +37,7 @@ import httpx
 
 from httpx.concurrency.trio import TrioBackend
 from httpx.exceptions import ConnectTimeout, PoolTimeout
-from httpx.config import PoolLimits
+from httpx.config import PoolLimits, TimeoutConfig
 
 from h2.exceptions import StreamClosedError
 
@@ -62,8 +62,8 @@ limit = trio.CapacityLimiter(4)
 
 global_client = httpx.Client(
     backend=TrioBackend(),
-    timeout=TIMEOUT,
-    pool_limits=PoolLimits(soft_limit=6, hard_limit=100, pool_timeout=3),
+    timeout=TimeoutConfig(TIMEOUT),
+    pool_limits=PoolLimits(soft_limit=6, hard_limit=100),
 )
 
 
