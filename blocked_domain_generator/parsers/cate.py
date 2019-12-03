@@ -85,4 +85,4 @@ class CateParser(BaseParser):
         matched = re.match(num_regex, text)
         if matched:
             return int(matched.group(1))
-        return 0
+        return 0  # pragma: no cover
