@@ -35,7 +35,7 @@ import trio
 import httpx
 
 from httpx.concurrency.trio import TrioBackend
-from httpx.exceptions import ConnectTimeout
+from httpx.exceptions import ConnectTimeout, PoolTimeout
 from httpx.config import PoolLimits
 
 from h2.exceptions import StreamClosedError
@@ -62,7 +62,7 @@ limit = trio.CapacityLimiter(4)
 global_client = httpx.Client(
     backend=TrioBackend(),
     timeout=TIMEOUT,
-    pool_limits=PoolLimits(soft_limit=6, hard_limit=100, pool_timeout=60),
+    pool_limits=PoolLimits(soft_limit=6, hard_limit=100, pool_timeout=3),
 )
 
 
@@ -93,6 +93,7 @@ class Crawler:
             trio.BrokenResourceError,
             ConnectTimeout,
             StreamClosedError,
+            PoolTimeout,
         ):
             logger.error("%s 爬取失败 即将重试 第%d次" % (self.url, cnt + 1))
             await trio.sleep(0.5)
