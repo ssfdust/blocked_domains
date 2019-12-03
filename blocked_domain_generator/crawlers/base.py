@@ -62,7 +62,7 @@ limit = trio.CapacityLimiter(4)
 global_client = httpx.Client(
     backend=TrioBackend(),
     timeout=TIMEOUT,
-    pool_limits=PoolLimits(soft_limit=4, hard_limit=100, pool_timeout=60),
+    pool_limits=PoolLimits(soft_limit=6, hard_limit=100, pool_timeout=60),
 )
 
 
