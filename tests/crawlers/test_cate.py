@@ -17,10 +17,3 @@ async def test_indirect_crawler(request):
     records = more_site_crawler.to_records()
     assert records
     extract = request.config.cache.set("records", records[:10])
-
-
-@pytest.mark.trio
-async def test_moresite_crawler(fakedata, monkeypatch):
-    monkeypatch.setattr(const, "PORNDUDE_PREFIX", "")
-    more_site_crawler = MoreSiteCrawler(fakedata)
-    await more_site_crawler.load_website()

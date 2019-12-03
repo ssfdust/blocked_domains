@@ -7,6 +7,6 @@ install:
     - PATH="${PATH}:$HOME/.poetry/bin"
     - poetry config virtualenvs.create false && poetry install --no-interaction --no-ansi
 script:
-    - pytest -v tests/ --cov=blocked_domain_generator -s
+    - pytest -v tests/
 after_success:
   - coveralls

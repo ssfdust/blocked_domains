@@ -1,0 +1,8 @@
+[paths]
+source =
+    blocked_domain_generator/
+
+[report]
+omit =
+    blocked_domain_generator/__main__.py
+show_missing = on
