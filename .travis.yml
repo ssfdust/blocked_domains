@@ -1,0 +1,12 @@
+language: python
+python:
+  - "3.8"
+install:
+    - pip install python-coveralls
+    - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python - --preview
+    - PATH="${PATH}:$HOME/.poetry/bin"
+    - poetry config virtualenvs.create false && poetry install --no-interaction --no-ansi
+script:
+    - pytest -v tests/ --cov=blocked_domain_generator -s
+after_success:
+  - coveralls
