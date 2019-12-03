@@ -12,6 +12,6 @@ def fakedata():
         name = "{}".format(i)
         data[name] = {
             "count": 1,
-            "url": "https://www.baidu.com"
+            "url": "https://www.google.com"
         }
     return data
