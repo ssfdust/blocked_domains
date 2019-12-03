@@ -29,6 +29,7 @@
 import sys
 import random
 import socket
+import ssl
 from typing import List
 
 import trio
@@ -94,6 +95,7 @@ class Crawler:
             ConnectTimeout,
             StreamClosedError,
             PoolTimeout,
+            ssl.SSLError,
         ):
             logger.error("%s 爬取失败 即将重试 第%d次" % (self.url, cnt + 1))
             await trio.sleep(0.5)
