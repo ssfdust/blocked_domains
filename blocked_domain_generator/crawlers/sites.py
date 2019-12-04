@@ -27,6 +27,7 @@
 from typing import List, Dict
 
 from trio._core._run import NurseryManager
+from httpx.concurrency.trio import TrioBackend
 
 from blocked_domain_generator.crawlers.base import NameCrawler, MultiCrawler, httpx, global_client
 from blocked_domain_generator.parsers.sites import TargetSiteParser
@@ -35,7 +36,7 @@ from blocked_domain_generator import const
 
 def new_client() -> httpx.Client:
     return httpx.Client(
-        backend=httpx.TrioBackend(),
+        backend=TrioBackend(),
         timeout=httpx.TimeoutConfig(const.TIMEOUT),
         pool_limits=httpx.PoolLimits(soft_limit=6, hard_limit=100),
     )
