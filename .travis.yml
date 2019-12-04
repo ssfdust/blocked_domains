@@ -6,6 +6,8 @@ install:
     - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python - --preview
     - PATH="${PATH}:$HOME/.poetry/bin"
     - poetry config virtualenvs.create false && poetry install --no-interaction --no-ansi
+    - pip install git+https://github.com/lundberg/respx.git --upgrade
+    - pip install git+https://github.com/encode/httpx.git --upgrade
 script:
     - pytest -v tests/
 after_success:
