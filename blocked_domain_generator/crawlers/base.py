@@ -36,7 +36,7 @@ import trio
 import httpx
 
 from httpx.concurrency.trio import TrioBackend
-from httpx.exceptions import ConnectTimeout, PoolTimeout, ReadTimeout
+from httpx.exceptions import ConnectTimeout, ReadTimeout
 from httpx.config import PoolLimits, TimeoutConfig
 
 from h2.exceptions import StreamClosedError
@@ -71,7 +71,6 @@ ConnectErrors = (
     trio.BrokenResourceError,
     ConnectTimeout,
     StreamClosedError,
-    PoolTimeout,
     ssl.SSLError,
     ReadTimeout,
 )
@@ -106,9 +105,8 @@ class Crawler:
         try:
             self.cnt += 1
             response = await client.get(self.url)
-        except ConnectErrors as e:
+        except ConnectErrors:
             await self._handle_failed(httpx.Response(65536))
-            raise e
         else:
             return await self._handle_response(response)
 

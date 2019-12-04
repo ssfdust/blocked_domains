@@ -24,7 +24,7 @@
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     工具组件模块
 """
-from typing import Set
+from typing import Set, List
 
 
 def trim_dot(text: str) -> str:
@@ -45,3 +45,9 @@ def combine_set(*args: Set) -> Set:
 def difference_set(parent: Set, child: Set) -> Set:
     """求父集的补集"""
     return parent ^ child & parent
+
+
+def chunks(lst: List, chunk_size: int):
+    """Yield successive n-sized chunks from lst."""
+    for i in range(0, len(lst), chunk_size):
+        yield lst[i:i + chunk_size]
