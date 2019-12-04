@@ -48,7 +48,7 @@ async def test_client_with_exceptions():
     respx.get("http://test_exceptions", content=ConnectTimeout())
     crawler = Crawler("http://test_exceptions")
 
-    with pytest.raises(RuntimeError):
+    with pytest.raises(Exception):
         await crawler.load_website()
 
 
