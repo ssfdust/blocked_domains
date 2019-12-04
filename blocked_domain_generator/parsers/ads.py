@@ -44,8 +44,6 @@ class FileParser(BaseParser):
 
     @staticmethod
     def _parse_line(line: str) -> str:
-        #  if "Reject" in line and "DOMAIN-SUFFIX" in line:
-        #      return trim_dot(line.split(',')[DOMAIN_POSTION])
         return line
 
 

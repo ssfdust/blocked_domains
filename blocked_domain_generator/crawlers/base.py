@@ -62,6 +62,7 @@ limit = trio.CapacityLimiter(4)
 
 global_client = httpx.Client(
     backend=TrioBackend(),
+    http_versions="HTTP/1.1",
     timeout=TimeoutConfig(TIMEOUT),
     pool_limits=PoolLimits(soft_limit=6, hard_limit=100),
 )
@@ -126,13 +127,12 @@ class Crawler:
         if response.status_code == TOO_MANY_REQUESTS:
             hours = float(response.headers["retry-after"]) / 3600
             logger.error("{} 爬取失败，请在{:.2f}小时后重试".format(self.url, hours))
+        logger.error(f"{self.url} 错误码{response.status_code}")
         return RequestState.Err
 
 
 class NameCrawler(Crawler):
-    def __init__(
-        self, url: str, name: str, client: httpx.Client = global_client
-    ):
+    def __init__(self, url: str, name: str, client: httpx.Client = global_client):
         super().__init__(url, client)
         self.name = name
 

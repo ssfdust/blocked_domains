@@ -29,18 +29,33 @@ from typing import List, Dict
 from trio._core._run import NurseryManager
 
 from blocked_domain_generator.crawlers.base import NameCrawler, MultiCrawler
+from blocked_domain_generator.parsers.sites import TargetSiteParser
 from blocked_domain_generator import const
+
+
+class TargetSiteCrawler(NameCrawler, TargetSiteParser):
+    def __init__(self, url: str, name: str):
+        NameCrawler.__init__(self, url, name)
+        TargetSiteParser.__init__(self)
 
 
 class SiteListCrawler(MultiCrawler):
     def __init__(self, records: List[Dict[str, str]]):
         MultiCrawler.__init__(self)
+        self.crawlers: List[TargetSiteCrawler] = []
         self.records = records
+        self.urls = set()
 
     def _start_loop(self, nursery: NurseryManager):
         for record in self.records:
             name = "{}-{}".format(record["name"], record["title"])
-            crawler = NameCrawler(
+            crawler = TargetSiteCrawler(
                 name=name, url=const.PORNDUDE_PREFIX + record["url"]
             )
+            self.crawlers.append(crawler)
             nursery.start_soon(crawler.load_website)
+
+    def parse(self):
+        for crawler in self.crawlers:
+            crawler.parse()
+            self.urls.add(crawler.extract)

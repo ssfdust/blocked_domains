@@ -24,9 +24,24 @@
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     工具组件模块
 """
+from typing import Set
 
 
 def trim_dot(text: str) -> str:
     if text.startswith("."):
         return text[1:]
     return text
+
+
+def combine_set(*args: Set) -> Set:
+    """多个集合的交集"""
+    result = set()
+    for ele in args:
+        result = result | ele
+
+    return result
+
+
+def difference_set(parent: Set, child: Set) -> Set:
+    """求父集的补集"""
+    return parent ^ child & parent

@@ -5,6 +5,7 @@ import trio
 from .crawlers.index import IndexCrawler
 from .crawlers.cate import MoreSiteCrawler
 from .crawlers.sites import SiteListCrawler
+from .crawlers.ads import get_combine_crawler
 from .const import PORNDUDE
 
 
@@ -20,6 +21,14 @@ async def start_crawler():
 
     sc = SiteListCrawler(records)
     await sc.load_website()
+    sc.parse()
+
+    combine = await get_combine_crawler()
+    data = combine.records() | sc.urls
+    with open("blocked", "w") as f:
+        for ele in data:
+            f.write(ele)
+            f.write("\n")
 
 
 trio.run(start_crawler)

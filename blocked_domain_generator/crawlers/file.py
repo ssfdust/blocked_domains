@@ -27,10 +27,23 @@
 
 import httpx
 
-from blocked_domain_generator.crawlers.base import NameCrawler, RequestState
+from blocked_domain_generator.crawlers.base import Crawler, RequestState
+from blocked_domain_generator.parsers.ads import BanListParser, FileParser, HostParser
 
 
-class FileCrawler(NameCrawler):
+class BaseFileCrawler(Crawler):
     def _handle_ok(self, response: httpx.Response) -> int:
         self.data = response.content.decode("utf-8")
         return RequestState.Ok
+
+
+class FileCrawler(BaseFileCrawler, FileParser):
+    pass
+
+
+class BanListCrawler(BaseFileCrawler, BanListParser):
+    pass
+
+
+class HostCrawler(BaseFileCrawler, HostParser):
+    pass

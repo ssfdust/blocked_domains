@@ -26,11 +26,29 @@
 """
 import pytest
 
-from blocked_domain_generator.utils import trim_dot
+from blocked_domain_generator.utils import trim_dot, combine_set, difference_set
 
 
 @pytest.mark.parametrize(
-    "text, result", [("..1212", ".1212"), (".abc.com", "abc.com")]
+    "text, result", [("..1212", ".1212"), (".abc.com", "abc.com"), ("test", "test")]
 )
 def test_trim_dot(text, result):
     assert trim_dot(text) == result
+
+
+@pytest.mark.parametrize(
+    "args, result",
+    [
+        ([{1, 2, 3, 4}, {4, 6, 7}, {9, -1}], {-1, 1, 2, 3, 4, 6, 7, 9}),
+        ([{1, 3}, {2, 4}], {1, 2, 3, 4}),
+    ],
+)
+def test_combine_set(args, result):
+    assert combine_set(*args) == result
+
+
+@pytest.mark.parametrize(
+    "parent, child, result", [({1, 2, 3, 4}, {4, 2}, {1, 3}), ({1, 3}, {3, 4}, {1})]
+)
+def test_difference_set(parent, child, result):
+    assert difference_set(parent, child) == result

@@ -81,9 +81,7 @@ class BlockListFiles:
         "h2y/Shadowrocket-ADBlock-Rules/"
         "master/sr_top500_banlist_ad.conf"
     )
-    hosts = (
-        "https://cdn.jsdelivr.net/gh/neoFelhz/neohosts@gh-pages/basic/hosts"
-    )
+    hosts = "https://cdn.jsdelivr.net/gh/neoFelhz/neohosts@gh-pages/basic/hosts"
     v2ray = (
         "https://raw.githubusercontent.com/"
         "felix-fly/v2ray-dnsmasq-dnscrypt/"

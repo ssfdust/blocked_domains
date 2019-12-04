@@ -1,0 +1,43 @@
+# Best Shadowrocket Rules (https://github.com/h2y/Shadowrocket-ADBlock-Rules)
+# by Moshel
+# build time: 2019-11-03 11:14:24
+
+[General]
+bypass-system = true
+skip-proxy = 192.168.0.0/16, 10.0.0.0/8, 172.16.0.0/12, localhost, *.local, e.crashlytics.com, captive.apple.com
+bypass-tun = 10.0.0.0/8,100.64.0.0/10,127.0.0.0/8,169.254.0.0/16,172.16.0.0/12,192.0.0.0/24,192.0.2.0/24,192.88.99.0/24,192.168.0.0/16,198.18.0.0/15,198.51.100.0/24,203.0.113.0/24,224.0.0.0/4,255.255.255.255/32
+dns-server = system, 114.114.114.114, 112.124.47.27, 8.8.8.8, 8.8.4.4
+[Rule]
+#
+# 黑名单中包含了 GFWList 中定义的无法访问的网站，剩下的网站直连。
+# 包含广告过滤
+#
+
+
+# 手工定义的 Reject 列表
+#待反馈是否误杀
+DOMAIN-SUFFIX,ad.12306.cn,Reject
+#百度（可能有多余项）
+DOMAIN-SUFFIX,eclick.baidu.com,Reject
+DOMAIN-SUFFIX,entry.baidu.com,Reject
+DOMAIN-SUFFIX,hmma.baidu.com,Reject
+DOMAIN-SUFFIX,mobads-logs.baidu.com,Reject
+DOMAIN-SUFFIX,mobads.baidu.com,Reject
+DOMAIN-SUFFIX,mtj.baidu.com,Reject
+DOMAIN-SUFFIX,nsclick.baidu.com,Reject
+DOMAIN-SUFFIX,static.tieba.baidu.com,Reject
+DOMAIN-SUFFIX,ucstat.baidu.com,Reject
+DOMAIN-SUFFIX,union.baidu.com,Reject
+IP-CIDR,149.154.172.0/22,Proxy
+# 修复 google voice #112
+IP-CIDR,74.125.23.127/32,Proxy
+# hacker news web site
+DOMAIN-SUFFIX,news.ycombinator.com,Proxy
+
+
+FINAL,direct
+
+[URL Rewrite]
+^http://(www.)?google.cn https://www.google.com 302
+
+# By Moshel @ https://hzy.pw/

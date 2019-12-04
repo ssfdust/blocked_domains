@@ -26,12 +26,15 @@
 """
 import pytest
 
-from blocked_domain_generator.crawlers.file import FileCrawler
-from blocked_domain_generator import const
+from blocked_domain_generator.crawlers.file import BaseFileCrawler
+from blocked_domain_generator.const import BlockListFiles as filelst
 
 
 @pytest.mark.trio
-async def test_file_crawler():
-    crawler = FileCrawler(const.BlockListFiles.banlist, "test_file_crawler")
+@pytest.mark.parametrize(
+    "url", [filelst.banlist, filelst.hosts, filelst.v2ray, filelst.ad_blank]
+)
+async def test_file_crawler(url):
+    crawler = BaseFileCrawler(url)
     await crawler.load_website()
     assert isinstance(crawler.data, str)

@@ -19,15 +19,17 @@
 # COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 # IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-
+"""
+    tests.crawlers.test_ads
+    ~~~~~~~~~~~~~~~~~~~~~~~~
+    测试组合广告域名获取
+"""
 import pytest
+from blocked_domain_generator.crawlers.ads import get_combine_crawler
 
 
-@pytest.fixture
-def fakedata():
-    data = {}
-    for i in range(100):
-        name = "{}".format(i)
-        data[name] = {"count": 1, "url": "https://www.google.com"}
-    return data
+@pytest.mark.trio
+async def test_combine_ad_crawler():
+    crawler = await get_combine_crawler()
+    records = crawler.records()
+    assert len(records) > 300

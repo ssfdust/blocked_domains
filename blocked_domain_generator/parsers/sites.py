@@ -61,9 +61,7 @@ class SiteParser(BaseParser):
 
     def _resolve_titlelink(self, tag: Tag) -> List[Dict[str, str]]:
         records = []
-        for url_element in tag.find_all(
-            const.DIV_TAG, class_=const.TITLE_CLASS
-        ):
+        for url_element in tag.find_all(const.DIV_TAG, class_=const.TITLE_CLASS):
             records.append(
                 {
                     "name": self.name,
@@ -73,3 +71,11 @@ class SiteParser(BaseParser):
             )
 
         return records
+
+
+class TargetSiteParser(BaseParser):
+    def parse(self):
+        if self.bs4 is None:
+            self.init_parser()
+        node = self.bs4.find(const.DIV_TAG, "favicon-bar-addressbar")
+        self.extract = node.a.attrs["title"]
