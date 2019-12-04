@@ -27,7 +27,7 @@
 """
 
 import sys
-import random
+import secrets
 import socket
 import ssl
 from typing import List
@@ -91,7 +91,7 @@ class Crawler:
                 logger.info(f"开始爬取{self.url}")
                 # Attemp to prevent too many requests
                 # at the same time
-                await trio.sleep(random.random())
+                await trio.sleep(secrets.randbelow(1000) / 1000)
                 await self._retry_loop(client)
 
     async def _retry_loop(self, client: httpx.Client):
