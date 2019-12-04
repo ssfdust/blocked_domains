@@ -88,6 +88,7 @@ class Crawler:
     async def load_website(self):
         async with self.client as client:
             async with limit:
+                logger.info(f"开始爬取{self.url}")
                 # Attemp to prevent too many requests
                 # at the same time
                 await trio.sleep(random.random())

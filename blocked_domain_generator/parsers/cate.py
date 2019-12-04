@@ -25,16 +25,14 @@
     提取所有的文字类别，且归类
 """
 import re
-import logging
 from typing import List, Dict, Union
 
 from bs4 import Tag
+from loguru import logger
 
 from blocked_domain_generator import const
 
 from .base import BaseParser
-
-logging.basicConfig(level=logging.INFO)
 
 title_regex = re.compile(r".*({}).*".format("|".join(const.KEY_WORD)))
 
@@ -68,7 +66,7 @@ class CateParser(BaseParser):
             if re.match(title_regex, title):
                 filtered_blocks[title] = self._extract_block(block)
             else:
-                logging.info("not parsed title: %s", title)
+                logger.info(f"未处理类别: {title}")
 
         return filtered_blocks
 
