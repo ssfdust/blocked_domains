@@ -72,22 +72,26 @@ class Crawler:
         self.url: str = url
         self.data: str = None
         self.client = client
+        self.cnt = 0
 
     async def load_website(self):
         async with self.client as client:
             async with limit:
+                # Attemp to prevent too many requests
+                # at the same time
                 await trio.sleep(random.random())
-                logger.info("爬取 %s" % self.url)
-                for cnt in range(0, MAX_TRIES):
-                    state = await self._single_request(client, cnt)
+
+                for _ in range(0, MAX_TRIES):
+                    state = await self._single_request(client)
                     if state is RequestState.Ok:
                         break
                 else:
                     logger.error("%s 爬取彻底失败" % self.url)
                     raise RuntimeError("爬取失败")
 
-    async def _single_request(self, client: httpx.Client, cnt: int = 0):
+    async def _single_request(self, client: httpx.Client):
         try:
+            self.cnt += 1
             response = await client.get(self.url)
         except (
             socket.gaierror,
@@ -98,26 +102,27 @@ class Crawler:
             ssl.SSLError,
             ReadTimeout,
         ):
-            logger.error("%s 爬取失败 即将重试 第%d次" % (self.url, cnt + 1))
-            await trio.sleep(0.5)
-            return RequestState.Err
+            self._handle_failed(httpx.Response(65536))
         else:
-            return self._handle_response(response, cnt)
+            return await self._handle_response(response)
 
-    def _handle_response(self, response: httpx.Response, cnt: int) -> int:
+    async def _handle_response(self, response: httpx.Response) -> int:
         if response.status_code == SUCCESS:
-            logger.info("%s 爬取完毕" % self.url)
-            self.data = response.text[:]
-            return RequestState.Ok
-        self._handle_failed(response)
-        logger.error("%s 爬取失败 即将重试 第%d次" % (self.url, cnt + 1))
-        return RequestState.Err
+            return self._handle_ok(response)
+        return await self._handle_failed(response)
 
-    @staticmethod
-    def _handle_failed(response: httpx.Response):
+    def _handle_ok(self, response: httpx.Response) -> int:
+        logger.info("%s 爬取完毕" % self.url)
+        self.data = response.text[:]
+        return RequestState.Ok
+
+    async def _handle_failed(self, response: httpx.Response) -> int:
+        logger.error("%s 爬取失败 即将重试 第%d次" % (self.url, self.cnt))
+        await trio.sleep(0.5)
         if response.status_code == TOO_MANY_REQUESTS:
             hours = float(response.headers["retry-after"]) / 3600
             logger.error("{} 爬取失败，请在{:.2f}小时后重试".format(str(response.url), hours))
+        return RequestState.Err
 
 
 class NameCrawler(Crawler):
@@ -135,4 +140,4 @@ class MultiCrawler:
             self._start_loop(nursery)
 
     def _start_loop(self, nursery: NurseryManager):
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
