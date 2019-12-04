@@ -7,9 +7,9 @@ authors = ["ssfdust <ssfdust@gmail.com>"]
 [tool.poetry.dependencies]
 python = "^3.8"
 beautifulsoup4 = "^4.8.1"
-httpx = { git = "https://github.com/encode/httpx.git" }
 trio = "^0.13.0"
 loguru = "^0.4.0"
+httpx = "^0.8.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

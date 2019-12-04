@@ -62,7 +62,6 @@ limit = trio.CapacityLimiter(4)
 
 global_client = httpx.Client(
     backend=TrioBackend(),
-    http_versions="HTTP/1.1",
     timeout=TimeoutConfig(TIMEOUT),
     pool_limits=PoolLimits(soft_limit=6, hard_limit=100),
 )
@@ -107,8 +106,9 @@ class Crawler:
         try:
             self.cnt += 1
             response = await client.get(self.url)
-        except ConnectErrors:
+        except ConnectErrors as e:
             await self._handle_failed(httpx.Response(65536))
+            raise e
         else:
             return await self._handle_response(response)
 
