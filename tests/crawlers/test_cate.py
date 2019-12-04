@@ -3,7 +3,6 @@
 
 import pytest
 from blocked_domain_generator.crawlers.cate import MoreSiteCrawler
-from blocked_domain_generator import const
 
 
 @pytest.mark.second

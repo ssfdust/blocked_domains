@@ -20,25 +20,48 @@
 # IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
-    blocked_domain_generator.parsers.base
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    HTML的获取处理类
+    blocked_domain_generator.parsers.adparser
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    广告列表处理
 """
 
-from typing import Union, Tuple, Dict, List, Set
-from bs4 import BeautifulSoup
+from blocked_domain_generator.parsers.base import BaseParser
+from blocked_domain_generator.utils import trim_dot
+
+DOMAIN_POSTION = 1
 
 
-class BaseParser:
-    def __init__(self, data: str = None):
-        self.data: str = data
-        self.bs4: BeautifulSoup = None
-        self.extract: Union[Tuple, Dict, str, List, Set] = None
-        if self.data:
-            self.init_parser()
-
-    def init_parser(self):
-        self.bs4 = BeautifulSoup(self.data, features="html.parser")
-
+class FileParser(BaseParser):
     def parse(self):
-        self.extract = self.bs4.prettify()
+        record = set()
+
+        for line in self.data.split('\n'):
+            result = self._parse_line(line)
+            if result:
+                record.add(trim_dot(result))
+
+        self.extract = record
+
+    @staticmethod
+    def _parse_line(line: str) -> str:
+        #  if "Reject" in line and "DOMAIN-SUFFIX" in line:
+        #      return trim_dot(line.split(',')[DOMAIN_POSTION])
+        return line
+
+
+class BanListParser(FileParser):
+
+    @staticmethod
+    def _parse_line(line: str) -> str:
+        if "Reject" in line and "DOMAIN-SUFFIX" in line:
+            return line.split(',')[DOMAIN_POSTION]
+        return ""
+
+
+class HostParser(FileParser):
+
+    @staticmethod
+    def _parse_line(line: str) -> str:
+        if "0.0.0.0" in line:
+            return line.split()[DOMAIN_POSTION]
+        return ""

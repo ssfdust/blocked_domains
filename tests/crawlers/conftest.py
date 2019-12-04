@@ -3,9 +3,6 @@
 
 
 import pytest
-import httpx
-
-from blocked_domain_generator.crawlers.base import ConnectTimeout
 
 
 @pytest.fixture

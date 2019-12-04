@@ -20,25 +20,12 @@
 # IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
-    blocked_domain_generator.parsers.base
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    HTML的获取处理类
+    blocked_domain_generator.utils
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    工具组件模块
 """
 
-from typing import Union, Tuple, Dict, List, Set
-from bs4 import BeautifulSoup
-
-
-class BaseParser:
-    def __init__(self, data: str = None):
-        self.data: str = data
-        self.bs4: BeautifulSoup = None
-        self.extract: Union[Tuple, Dict, str, List, Set] = None
-        if self.data:
-            self.init_parser()
-
-    def init_parser(self):
-        self.bs4 = BeautifulSoup(self.data, features="html.parser")
-
-    def parse(self):
-        self.extract = self.bs4.prettify()
+def trim_dot(text: str) -> str:
+    if text.startswith('.'):
+        return text[1:]
+    return text
