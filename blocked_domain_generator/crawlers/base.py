@@ -130,7 +130,9 @@ class Crawler:
 
 
 class NameCrawler(Crawler):
-    def __init__(self, url: str, name: str, client: httpx.Client = global_client):
+    def __init__(
+        self, url: str, name: str, client: httpx.Client = global_client
+    ):
         super().__init__(url, client)
         self.name = name
 

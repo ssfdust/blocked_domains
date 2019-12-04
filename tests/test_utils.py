@@ -30,11 +30,7 @@ from blocked_domain_generator.utils import trim_dot
 
 
 @pytest.mark.parametrize(
-    "text, result",
-    [
-        ("..1212", ".1212"),
-        (".abc.com", "abc.com")
-    ]
+    "text, result", [("..1212", ".1212"), (".abc.com", "abc.com")]
 )
 def test_trim_dot(text, result):
     assert trim_dot(text) == result

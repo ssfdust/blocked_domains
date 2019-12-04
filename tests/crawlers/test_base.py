@@ -36,11 +36,7 @@ async def test_client_with_exceptions():
 @pytest.mark.trio
 @respx.mock
 @pytest.mark.parametrize(
-    "code, headers",
-    [
-        (429, {"retry-after": "3000"}),
-        (500, {})
-    ]
+    "code, headers", [(429, {"retry-after": "3000"}), (500, {})]
 )
 async def test_resp_error(code, headers):
     respx.get("http://test_resp_error", status_code=code, headers=headers)

@@ -55,7 +55,10 @@ class CateParser(BaseParser):
 
     def _parse_div_block(self) -> List[Tag]:
         blocks = list(
-            tag for tag in self.bs4.find_all(const.DIV_TAG, class_=const.CATE_CLASS)
+            tag
+            for tag in self.bs4.find_all(
+                const.DIV_TAG, class_=const.CATE_CLASS
+            )
         )
 
         return blocks
@@ -72,7 +75,9 @@ class CateParser(BaseParser):
 
         return filtered_blocks
 
-    def _extract_block(self, filtered_block: Tag) -> Dict[str, Union[List[str], str]]:
+    def _extract_block(
+        self, filtered_block: Tag
+    ) -> Dict[str, Union[List[str], str]]:
         more_sites_button = filtered_block.find("a", class_="category-bottom")
 
         return {

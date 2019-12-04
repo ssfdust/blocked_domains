@@ -35,7 +35,7 @@ class FileParser(BaseParser):
     def parse(self):
         record = set()
 
-        for line in self.data.split('\n'):
+        for line in self.data.split("\n"):
             result = self._parse_line(line)
             if result:
                 record.add(trim_dot(result))
@@ -50,16 +50,14 @@ class FileParser(BaseParser):
 
 
 class BanListParser(FileParser):
-
     @staticmethod
     def _parse_line(line: str) -> str:
         if "Reject" in line and "DOMAIN-SUFFIX" in line:
-            return line.split(',')[DOMAIN_POSTION]
+            return line.split(",")[DOMAIN_POSTION]
         return ""
 
 
 class HostParser(FileParser):
-
     @staticmethod
     def _parse_line(line: str) -> str:
         if "0.0.0.0" in line:

@@ -33,7 +33,9 @@ from blocked_domain_generator.crawlers.base import NameCrawler, MultiCrawler
 from blocked_domain_generator.parsers.sites import SiteParser
 from blocked_domain_generator import const
 
-ExtractType = NewType("ExtractType", Dict[str, Dict[str, Union[str, List[str]]]])
+ExtractType = NewType(
+    "ExtractType", Dict[str, Dict[str, Union[str, List[str]]]]
+)
 
 
 class SitePageCrawler(NameCrawler, SiteParser):

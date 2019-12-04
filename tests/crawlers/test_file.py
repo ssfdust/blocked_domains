@@ -32,7 +32,6 @@ from blocked_domain_generator import const
 
 @pytest.mark.trio
 async def test_file_crawler():
-    crawler = FileCrawler(const.BlockListFiles.banlist,
-                          "test_file_crawler")
+    crawler = FileCrawler(const.BlockListFiles.banlist, "test_file_crawler")
     await crawler.load_website()
     assert isinstance(crawler.data, str)

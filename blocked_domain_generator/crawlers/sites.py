@@ -40,5 +40,7 @@ class SiteListCrawler(MultiCrawler):
     def _start_loop(self, nursery: NurseryManager):
         for record in self.records:
             name = "{}-{}".format(record["name"], record["title"])
-            crawler = NameCrawler(name=name, url=const.PORNDUDE_PREFIX + record["url"])
+            crawler = NameCrawler(
+                name=name, url=const.PORNDUDE_PREFIX + record["url"]
+            )
             nursery.start_soon(crawler.load_website)

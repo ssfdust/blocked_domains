@@ -61,7 +61,9 @@ class SiteParser(BaseParser):
 
     def _resolve_titlelink(self, tag: Tag) -> List[Dict[str, str]]:
         records = []
-        for url_element in tag.find_all(const.DIV_TAG, class_=const.TITLE_CLASS):
+        for url_element in tag.find_all(
+            const.DIV_TAG, class_=const.TITLE_CLASS
+        ):
             records.append(
                 {
                     "name": self.name,

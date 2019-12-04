@@ -25,7 +25,8 @@
     工具组件模块
 """
 
+
 def trim_dot(text: str) -> str:
-    if text.startswith('.'):
+    if text.startswith("."):
         return text[1:]
     return text

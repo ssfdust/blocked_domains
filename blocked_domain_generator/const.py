@@ -29,7 +29,19 @@ PORNDUDE = "https://theporndude.com/zh"
 
 PORNDUDE_PREFIX = "https://theporndude.com"
 
-KEY_WORD = ["成人", "色情", "情色", "艳照门", "AV", "偷窥", "裸", "性爱", "三陪", "女优", "Hentai"]
+KEY_WORD = [
+    "成人",
+    "色情",
+    "情色",
+    "艳照门",
+    "AV",
+    "偷窥",
+    "裸",
+    "性爱",
+    "三陪",
+    "女优",
+    "Hentai",
+]
 
 CATE_CLASS = "category-container"
 
@@ -69,7 +81,9 @@ class BlockListFiles:
         "h2y/Shadowrocket-ADBlock-Rules/"
         "master/sr_top500_banlist_ad.conf"
     )
-    hosts = "https://cdn.jsdelivr.net/gh/neoFelhz/neohosts@gh-pages/basic/hosts"
+    hosts = (
+        "https://cdn.jsdelivr.net/gh/neoFelhz/neohosts@gh-pages/basic/hosts"
+    )
     v2ray = (
         "https://raw.githubusercontent.com/"
         "felix-fly/v2ray-dnsmasq-dnscrypt/"

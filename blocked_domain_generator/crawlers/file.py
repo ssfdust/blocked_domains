@@ -32,5 +32,5 @@ from blocked_domain_generator.crawlers.base import NameCrawler, RequestState
 
 class FileCrawler(NameCrawler):
     def _handle_ok(self, response: httpx.Response) -> int:
-        self.data = response.content.decode('utf-8')
+        self.data = response.content.decode("utf-8")
         return RequestState.Ok
