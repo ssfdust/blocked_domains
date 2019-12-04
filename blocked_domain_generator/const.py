@@ -60,3 +60,23 @@ class RequestState:
 
     Ok = 0
     Err = 1
+
+
+class BlockListFiles:
+
+    banlist = (
+        "https://raw.githubusercontent.com/"
+        "h2y/Shadowrocket-ADBlock-Rules/"
+        "master/sr_top500_banlist_ad.conf"
+    )
+    hosts = "https://cdn.jsdelivr.net/gh/neoFelhz/neohosts@gh-pages/basic/hosts"
+    v2ray = (
+        "https://raw.githubusercontent.com/"
+        "felix-fly/v2ray-dnsmasq-dnscrypt/"
+        "master/config/ad.conf"
+    )
+    ad_blank = (
+        "https://raw.githubusercontent.com/"
+        "felix-fly/v2ray-dnsmasq-dnscrypt/"
+        "master/config/ad_blank.conf"
+    )

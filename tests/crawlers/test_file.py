@@ -20,17 +20,19 @@
 # IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
-    blocked_domain_generator.crawlers.file
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    文件爬取器
+    tests.crawlers.test_file
+    ~~~~~~~~~~~~~~~~~~~~~~~~~
+    测试文件爬虫
 """
+import pytest
 
-import httpx
+from blocked_domain_generator.crawlers.file import FileCrawler
+from blocked_domain_generator import const
 
-from blocked_domain_generator.crawlers.base import NameCrawler, RequestState
 
-
-class FileCrawler(NameCrawler):
-    def _handle_ok(self, response: httpx.Response) -> int:
-        self.data = response.content.decode('utf-8')
-        return RequestState.Ok
+@pytest.mark.trio
+async def test_file_crawler():
+    crawler = FileCrawler(const.BlockListFiles.banlist,
+                          "test_file_crawler")
+    await crawler.load_website()
+    assert isinstance(crawler.data, str)

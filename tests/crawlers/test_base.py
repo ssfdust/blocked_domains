@@ -8,8 +8,9 @@
     测试是否爬取到网站内容
 """
 import pytest
+import respx
 
-from blocked_domain_generator.crawlers.base import Crawler
+from blocked_domain_generator.crawlers.base import Crawler, ConnectTimeout
 from blocked_domain_generator import const
 
 
@@ -23,16 +24,27 @@ async def test_website_loaded():
 
 
 @pytest.mark.trio
-async def test_client_with_exceptions(client_with_exceptions):
-    crawler = Crawler("http://test_exceptions", client_with_exceptions)
+@respx.mock
+async def test_client_with_exceptions():
+    respx.get("http://test_exceptions", content=ConnectTimeout())
+    crawler = Crawler("http://test_exceptions")
 
     with pytest.raises(RuntimeError):
         await crawler.load_website()
 
 
 @pytest.mark.trio
-async def test_resp_error(client_with_too_many_requests):
-    crawler = Crawler("http://test", client_with_too_many_requests)
+@respx.mock
+@pytest.mark.parametrize(
+    "code, headers",
+    [
+        (429, {"retry-after": "3000"}),
+        (500, {})
+    ]
+)
+async def test_resp_error(code, headers):
+    respx.get("http://test_resp_error", status_code=code, headers=headers)
+    crawler = Crawler("http://test_resp_error")
 
     with pytest.raises(RuntimeError):
         await crawler.load_website()
