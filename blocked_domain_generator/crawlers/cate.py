@@ -45,7 +45,9 @@ class SitePageCrawler(NameCrawler, SiteParser):
     def check_extract_amount(self):
         extract_len = len(self.extract)
         if self.count != extract_len:
-            logger.warning(f"{self.name} 总数为{self.count}, 实际{extract_len}")  # pragma: no cover
+            logger.warning(
+                f"{self.name} 总数为{self.count}, 实际{extract_len}"
+            )  # pragma: no cover
         else:
             logger.info(f"{self.name} 总数为{self.count}, 全部爬取完毕")
 

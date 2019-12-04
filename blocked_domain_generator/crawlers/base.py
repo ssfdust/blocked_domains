@@ -66,6 +66,16 @@ global_client = httpx.Client(
     pool_limits=PoolLimits(soft_limit=6, hard_limit=100),
 )
 
+ConnectErrors = (
+    socket.gaierror,
+    trio.BrokenResourceError,
+    ConnectTimeout,
+    StreamClosedError,
+    PoolTimeout,
+    ssl.SSLError,
+    ReadTimeout,
+)
+
 
 class Crawler:
     def __init__(self, url: str, client: httpx.Client = global_client):
@@ -80,29 +90,23 @@ class Crawler:
                 # Attemp to prevent too many requests
                 # at the same time
                 await trio.sleep(random.random())
+                await self._retry_loop(client)
 
-                for _ in range(0, MAX_TRIES):
-                    state = await self._single_request(client)
-                    if state is RequestState.Ok:
-                        break
-                else:
-                    logger.error("%s 爬取彻底失败" % self.url)
-                    raise RuntimeError("爬取失败")
+    async def _retry_loop(self, client: httpx.Client):
+        for _ in range(0, MAX_TRIES):
+            state = await self._single_request(client)
+            if state is RequestState.Ok:
+                break
+        else:
+            logger.error("%s 爬取彻底失败" % self.url)
+            raise RuntimeError("爬取失败")
 
     async def _single_request(self, client: httpx.Client):
         try:
             self.cnt += 1
             response = await client.get(self.url)
-        except (
-            socket.gaierror,
-            trio.BrokenResourceError,
-            ConnectTimeout,
-            StreamClosedError,
-            PoolTimeout,
-            ssl.SSLError,
-            ReadTimeout,
-        ):
-            self._handle_failed(httpx.Response(65536))
+        except ConnectErrors:
+            await self._handle_failed(httpx.Response(65536))
         else:
             return await self._handle_response(response)
 
@@ -121,7 +125,7 @@ class Crawler:
         await trio.sleep(0.5)
         if response.status_code == TOO_MANY_REQUESTS:
             hours = float(response.headers["retry-after"]) / 3600
-            logger.error("{} 爬取失败，请在{:.2f}小时后重试".format(str(response.url), hours))
+            logger.error("{} 爬取失败，请在{:.2f}小时后重试".format(self.url, hours))
         return RequestState.Err
 
 

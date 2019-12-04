@@ -21,9 +21,18 @@ async def test_website_loaded():
 
     assert crawler.data is not None and "Porn Dude" in crawler.data
 
-@pytest.mark.trio
-async def test_website_not_loaded():
-    crawler = Crawler("https://noexists")
 
-    with pytest.raises(Exception):
+@pytest.mark.trio
+async def test_client_with_exceptions(client_with_exceptions):
+    crawler = Crawler("http://test_exceptions", client_with_exceptions)
+
+    with pytest.raises(RuntimeError):
+        await crawler.load_website()
+
+
+@pytest.mark.trio
+async def test_resp_error(client_with_too_many_requests):
+    crawler = Crawler("http://test", client_with_too_many_requests)
+
+    with pytest.raises(RuntimeError):
         await crawler.load_website()
