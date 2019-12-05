@@ -103,4 +103,4 @@ ENV/
 .coverage
 
 # results
-adult
+sites/
