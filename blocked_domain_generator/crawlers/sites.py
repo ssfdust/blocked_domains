@@ -29,7 +29,13 @@ from typing import List, Dict
 from trio._core._run import NurseryManager
 from httpx.concurrency.trio import TrioBackend
 
-from blocked_domain_generator.crawlers.base import NameCrawler, MultiCrawler, httpx, global_client, tqdm
+from blocked_domain_generator.crawlers.base import (
+    NameCrawler,
+    MultiCrawler,
+    httpx,
+    global_client,
+    tqdm,
+)
 from blocked_domain_generator.parsers.sites import TargetSiteParser
 from blocked_domain_generator import const
 
@@ -62,12 +68,12 @@ class SiteListCrawler(MultiCrawler):
         for record in self.records:
             name = "{}-{}".format(record["name"], record["title"])
             crawler = TargetSiteCrawler(
-                name=name, url=const.PORNDUDE_PREFIX + record["url"],
-                client=self.client
+                name=name, url=const.PORNDUDE_PREFIX + record["url"], client=self.client
             )
             self.crawlers.append(crawler)
-            nursery.start_soon(crawler.load_website_with_sender,
-                               self.send_channel.clone())
+            nursery.start_soon(
+                crawler.load_website_with_sender, self.send_channel.clone()
+            )
 
     def parse(self):
         for crawler in self.crawlers:

@@ -75,8 +75,9 @@ class MoreSiteCrawler(MultiCrawler):
                 url=const.PORNDUDE_PREFIX + url, name=name, count=count
             )
             self.crawlers.append(crawler)
-            nursery.start_soon(crawler.load_website_with_sender,
-                               self.send_channel.clone())
+            nursery.start_soon(
+                crawler.load_website_with_sender, self.send_channel.clone()
+            )
 
     def parse(self):
         for crawler in self.crawlers:

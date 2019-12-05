@@ -23,7 +23,6 @@
 
 import trio
 from loguru import logger
-from tqdm import tqdm
 
 from .crawlers.index import IndexCrawler
 from .crawlers.cate import MoreSiteCrawler
@@ -71,7 +70,7 @@ async def start_crawler():
             f.write(ele)
             f.write("\n")
     with open("ads", "w") as f:
-        for ele in combine.records:
+        for ele in combine.records():
             f.write(ele)
             f.write("\n")
 

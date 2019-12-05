@@ -24,11 +24,14 @@
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     广告列表处理
 """
+import re
 
 from blocked_domain_generator.parsers.base import BaseParser
 from blocked_domain_generator.utils import trim_dot
 
 DOMAIN_POSTION = 1
+
+host_regex = re.compile(r"0.0.0.0\s(.*)")
 
 
 class FileParser(BaseParser):
@@ -58,6 +61,7 @@ class BanListParser(FileParser):
 class HostParser(FileParser):
     @staticmethod
     def _parse_line(line: str) -> str:
-        if "0.0.0.0" in line:
-            return line.split()[DOMAIN_POSTION]
+        match = re.match(host_regex, line)
+        if match:
+            return match.group(1)
         return ""

@@ -54,7 +54,7 @@ def difference_set(parent: Set, child: Set) -> Set:
 def chunks(lst: List, chunk_size: int):
     """Yield successive n-sized chunks from lst."""
     for i in range(0, len(lst), chunk_size):
-        yield lst[i:i + chunk_size]
+        yield lst[i : i + chunk_size]
 
 
 def drop_schema(url: str) -> str:
