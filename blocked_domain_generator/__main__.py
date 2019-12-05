@@ -19,7 +19,8 @@
 # COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 # IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-from pathlib import Path
+
+import math
 from typing import Set
 
 import trio
@@ -30,23 +31,18 @@ from .crawlers.cate import MoreSiteCrawler
 from .crawlers.sites import SiteListCrawler
 from .crawlers.ads import get_combine_crawler
 from .const import PORNDUDE
-from .utils import chunks
-
-DIST = "dist"
+from .utils import chunks, get_dist_path, dump_to_dist
 
 
 async def start_site_crawler(records) -> Set:
     urls = set()
-    length = len(records) / 53
-    logger.warning(f"总批次为{length}")
+    length = math.floor(len(records) / 53)
     for idx, chunk in enumerate(chunks(records, 53)):
-        logger.warning(f"开始爬取第{idx + 1}批次")
-        for item in chunk:
-            logger.info(item)
-        sc = SiteListCrawler(chunk)
-        await sc.load_website()
-        sc.parse()
-        urls = urls | sc.urls
+        logger.warning(f"开始爬取第{idx + 1}批次,共{length}批次")
+        site_list_crawler = SiteListCrawler(chunk)
+        await site_list_crawler.load_website()
+        site_list_crawler.parse()
+        urls = urls | site_list_crawler.urls
         logger.warning("当前批次爬取完毕，10秒后爬取下一批次")
         await trio.sleep(10)
 
@@ -74,22 +70,8 @@ async def start_ads_crawler() -> Set:
     return combine_records
 
 
-def get_dist_path() -> Path:
-    dist_path = Path().joinpath(DIST)
-    if not dist_path.exists():
-        dist_path.mkdir()
-    return dist_path
-
-
-def dump_to_dist(records: Set, filename: str):
-    dist_path = get_dist_path()
-    filepath = dist_path.joinpath(filename)
-    for record in records:
-        filepath.write_text(record)
-
-
 def main():
-    dist_path = get_dist_path()
+    dist_path = get_dist_path(create=False)
     concurrency_lst = [start_adult_crawler, start_ads_crawler]
     name_lst = ["adult", "ads"]
 

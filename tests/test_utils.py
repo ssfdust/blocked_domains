@@ -25,6 +25,7 @@
     测试组件模块
 """
 import pytest
+import os
 
 from blocked_domain_generator.utils import (
     trim_dot,
@@ -32,6 +33,9 @@ from blocked_domain_generator.utils import (
     difference_set,
     chunks,
     drop_schema,
+    get_dist_path,
+    dump_to_dist,
+    DIST,
 )
 
 
@@ -82,3 +86,23 @@ def test_chunks():
 )
 def test_drop_schema(url, domain):
     assert drop_schema(url) == domain
+
+
+def test_get_dist_path(tmpdir):
+    with tmpdir.as_cwd():
+        dist_path = get_dist_path()
+        assert dist_path.exists() and dist_path.absolute() == tmpdir.join(DIST)
+
+
+def test_not_create_dist(tmpdir):
+    with tmpdir.as_cwd():
+        dist_path = get_dist_path(create=False)
+        assert not dist_path.exists() and dist_path.absolute() == tmpdir.join(DIST)
+
+
+def test_dump_to_dist(tmpdir):
+    with tmpdir.as_cwd():
+        dump_to_dist({"abc", "def"}, "test")
+        test_path = get_dist_path().joinpath("test")
+        text = test_path.read_text()
+        assert set(item for item in text.split()) == {"abc", "def"} and text[-1] != "\n"

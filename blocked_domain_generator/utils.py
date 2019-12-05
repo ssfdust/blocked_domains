@@ -24,9 +24,11 @@
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     工具组件模块
 """
+from pathlib import Path
 from typing import Set, List
 import re
 
+DIST = "sites"
 
 schema_regex = re.compile(r"http[s]{0,1}://")
 
@@ -59,3 +61,22 @@ def chunks(lst: List, chunk_size: int):
 
 def drop_schema(url: str) -> str:
     return re.sub(schema_regex, "", url)
+
+
+def get_dist_path(create=True) -> Path:
+    dist_path = Path().joinpath(DIST)
+    if not dist_path.exists() and create:
+        dist_path.mkdir()
+    return dist_path
+
+
+def dump_to_dist(records: Set, filename: str):
+    dist_path = get_dist_path()
+    filepath = dist_path.joinpath(filename)
+
+    last = records.pop()
+
+    with filepath.open("a") as buf:
+        for record in records:
+            buf.write(record + "\n")
+        buf.write(last)
