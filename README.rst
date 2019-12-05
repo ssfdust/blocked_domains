@@ -1,4 +1,4 @@
-Blocked_domain_generator
+Blocked-domain-generator
 ==========================
 .. image:: https://travis-ci.org/ssfdust/blocked_domains.svg?branch=master
     :target: https://travis-ci.org/ssfdust/blocked_domains
