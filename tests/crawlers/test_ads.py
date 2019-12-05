@@ -31,5 +31,5 @@ from blocked_domain_generator.crawlers.ads import get_combine_crawler
 @pytest.mark.trio
 async def test_combine_ad_crawler():
     crawler = await get_combine_crawler()
-    records = crawler.records()
+    records = crawler.get_records()
     assert len(records) > 300

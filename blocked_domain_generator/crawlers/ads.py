@@ -57,7 +57,7 @@ class CombineAdCrawler(MultiCrawler):
         args = [crawler.extract for crawler in self.crawlers]
         return combine_set(*args)
 
-    def records(self) -> Set:
+    def get_records(self) -> Set:
         return difference_set(self._combine(), self.blank_crawler.extract)
 
 
