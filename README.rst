@@ -15,9 +15,9 @@ Blocked-domain-generator
 -------------------------
 .. code-block:: shell
 
-    pip install . --user
+    $ pip install . --user
 
-    block_generator
+    $ block_generator
 
     $ ls sites/
     ads  adult
