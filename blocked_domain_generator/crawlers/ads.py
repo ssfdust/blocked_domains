@@ -42,9 +42,10 @@ class CombineAdCrawler(MultiCrawler):
         super().__init__(crawlers)
         self.blank_crawler = blank_crawler
 
-    def _start_loop(self, nursery):
-        for crawler in chain(self.crawlers, [self.blank_crawler]):
-            nursery.start_soon(crawler.load_website)
+    async def _start_loop(self, nursery):
+        for crawler in self.crawlers:
+            nursery.start_soon(crawler.load_website_with_sender, self.send_channel.clone())
+        nursery.start_soon(self.blank_crawler.load_website)
 
     def parse(self):
         for crawler in chain(self.crawlers, [self.blank_crawler]):

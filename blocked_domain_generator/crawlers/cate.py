@@ -28,7 +28,7 @@ from typing import List, Dict, NewType, Union, Tuple
 
 from loguru import logger
 
-from blocked_domain_generator.crawlers.base import NameCrawler, MultiCrawler
+from blocked_domain_generator.crawlers.base import NameCrawler, MultiCrawler, tqdm
 from blocked_domain_generator.parsers.sites import SiteParser
 from blocked_domain_generator import const
 
@@ -55,6 +55,8 @@ class MoreSiteCrawler(MultiCrawler):
     def __init__(self, cate_nodes: ExtractType):
         super().__init__()
         self.node_tuple_lst = self.flat_nodes(cate_nodes)
+        self.total = len(self.node_tuple_lst)
+        self.pbar = tqdm.tqdm(total=self.total)
         self.extract = None
         self.records = []
 
@@ -67,23 +69,24 @@ class MoreSiteCrawler(MultiCrawler):
 
         return node_tuple_lst
 
-    def _start_loop(self, nursery):
+    async def _start_loop(self, nursery):
         for name, count, url in self.node_tuple_lst:
             crawler = SitePageCrawler(
                 url=const.PORNDUDE_PREFIX + url, name=name, count=count
             )
-            self.crawlers[name] = crawler
-            nursery.start_soon(crawler.load_website)
+            self.crawlers.append(crawler)
+            nursery.start_soon(crawler.load_website_with_sender,
+                               self.send_channel.clone())
 
     def parse(self):
-        for _, crawler in self.crawlers.items():
+        for crawler in self.crawlers:
             crawler.parse()
             crawler.check_extract_amount()
 
     def to_records(self) -> Dict[str, Dict[str, str]]:
         if self.records:
             return self.records  # pragma: no cover
-        for crawler in self.crawlers.values():
+        for crawler in self.crawlers:
             self.records.extend(crawler.extract)
 
         return self.records

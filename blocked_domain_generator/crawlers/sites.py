@@ -29,7 +29,7 @@ from typing import List, Dict
 from trio._core._run import NurseryManager
 from httpx.concurrency.trio import TrioBackend
 
-from blocked_domain_generator.crawlers.base import NameCrawler, MultiCrawler, httpx, global_client
+from blocked_domain_generator.crawlers.base import NameCrawler, MultiCrawler, httpx, global_client, tqdm
 from blocked_domain_generator.parsers.sites import TargetSiteParser
 from blocked_domain_generator import const
 
@@ -52,11 +52,13 @@ class SiteListCrawler(MultiCrawler):
     def __init__(self, records: List[Dict[str, str]]):
         MultiCrawler.__init__(self)
         self.crawlers: List[TargetSiteCrawler] = []
+        self.total = len(records)
+        self.pbar = tqdm.tqdm(total=self.total)
         self.records = records
         self.client = new_client()
         self.urls = set()
 
-    def _start_loop(self, nursery: NurseryManager):
+    async def _start_loop(self, nursery: NurseryManager):
         for record in self.records:
             name = "{}-{}".format(record["name"], record["title"])
             crawler = TargetSiteCrawler(
@@ -64,7 +66,8 @@ class SiteListCrawler(MultiCrawler):
                 client=self.client
             )
             self.crawlers.append(crawler)
-            nursery.start_soon(crawler.load_website)
+            nursery.start_soon(crawler.load_website_with_sender,
+                               self.send_channel.clone())
 
     def parse(self):
         for crawler in self.crawlers:

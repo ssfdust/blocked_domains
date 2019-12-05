@@ -25,6 +25,10 @@
     工具组件模块
 """
 from typing import Set, List
+import re
+
+
+schema_regex = re.compile(r"http[s]{0,1}://")
 
 
 def trim_dot(text: str) -> str:
@@ -51,3 +55,7 @@ def chunks(lst: List, chunk_size: int):
     """Yield successive n-sized chunks from lst."""
     for i in range(0, len(lst), chunk_size):
         yield lst[i:i + chunk_size]
+
+
+def drop_schema(url: str) -> str:
+    return re.sub(schema_regex, "", url)

@@ -7,7 +7,7 @@ python-versions = ">=3.5"
 version = "1.10"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Enhance the standard unittest package with features for testing asyncio libraries"
 name = "asynctest"
 optional = false
@@ -157,9 +157,15 @@ certifi = "*"
 chardet = ">=3.0.0,<4.0.0"
 h11 = ">=0.8.0,<0.9.0"
 h2 = ">=3.0.0,<4.0.0"
-hstspreload = ">=2019.8.27"
+hstspreload = "*"
 idna = ">=2.0.0,<3.0.0"
-rfc3986 = ">=1.0.0,<2.0.0"
+rfc3986 = ">=1.3,<2"
+sniffio = ">=1.0.0,<2.0.0"
+
+[package.source]
+reference = "81edb1b45bc3dad3bc5aff7d0a057fb55d4ca30b"
+type = "git"
+url = "https://github.com/encode/httpx.git"
 
 [[package]]
 category = "main"
@@ -353,16 +359,21 @@ pytest = ">=3.6"
 trio = ">=0.11"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "A utility for mocking out the Python HTTPX library."
 name = "respx"
 optional = false
-python-versions = "*"
+python-versions = ">=3.6"
 version = "0.8"
 
 [package.dependencies]
 asynctest = "*"
-httpx = ">=0.8,<0.9"
+httpx = "*"
+
+[package.source]
+reference = "3afe5c69f1f8f00517b9cee9a985993086a949c6"
+type = "git"
+url = "https://github.com/lundberg/respx.git"
 
 [[package]]
 category = "main"
@@ -406,6 +417,17 @@ name = "soupsieve"
 optional = false
 python-versions = "*"
 version = "1.9.5"
+
+[[package]]
+category = "main"
+description = "Fast, Extensible Progress Meter"
+name = "tqdm"
+optional = false
+python-versions = ">=2.6, !=3.0.*, !=3.1.*"
+version = "4.40.0"
+
+[package.extras]
+dev = ["py-make (>=0.1.0)", "twine", "argopt", "pydoc-markdown"]
 
 [[package]]
 category = "main"
@@ -453,7 +475,7 @@ python-versions = "*"
 version = "0.3"
 
 [metadata]
-content-hash = "d02e377bad4ba68e7f51d3e3d087e19f01c55b4006920965fee4ab7ca4bf992d"
+content-hash = "4d4f9b49cd342f9013e83153305a8e3d903d38988b7415fb3e4720c8d0266f62"
 python-versions = "^3.8"
 
 [metadata.files]
@@ -577,10 +599,7 @@ hpack = [
 hstspreload = [
     {file = "hstspreload-2019.11.25.tar.gz", hash = "sha256:cc0c0de823ebaa17ae069565e57d2ec1a502e4b7c7c13c43c1127c03a2160aaf"},
 ]
-httpx = [
-    {file = "httpx-0.8.0-py2.py3-none-any.whl", hash = "sha256:c9535c6914129a38e2a65d9a97f6e9386824cc8518606d2c177ddd1bc143681d"},
-    {file = "httpx-0.8.0.tar.gz", hash = "sha256:ee0ca2cd9ee917232199d60c848fa91ae3ebfb2314f92ea9446b5acd1ef6fd83"},
-]
+httpx = []
 hyperframe = [
     {file = "hyperframe-5.2.0-py2.py3-none-any.whl", hash = "sha256:5187962cb16dcc078f23cb5a4b110098d546c3f41ff2d4038a9896893bbd0b40"},
     {file = "hyperframe-5.2.0.tar.gz", hash = "sha256:a9f5c17f2cc3c719b917c4f33ed1c61bd1f8dfac4b1bd23b7c80b3400971b41f"},
@@ -647,10 +666,7 @@ pytest-trio = [
     {file = "pytest-trio-0.5.2.tar.gz", hash = "sha256:6a50e9585ebbb0ce9ae83d33bde7865952d76c4d4b8759a0345a551f113d468c"},
     {file = "pytest_trio-0.5.2-py3-none-any.whl", hash = "sha256:848c2ba632d9c2d4e2770fe4eb149c8db69ecefc9239e2e6f77c41d9a2393d5e"},
 ]
-respx = [
-    {file = "respx-0.8-py3-none-any.whl", hash = "sha256:3b075351e8ba27c3947fa9c939e58f62cd700791f46696fb8b4c5526e14fd46b"},
-    {file = "respx-0.8.tar.gz", hash = "sha256:fb24cadcb3bbc1bbe20a1e685c675f47844fe57df9acad6b830b8bc2fa79b68d"},
-]
+respx = []
 rfc3986 = [
     {file = "rfc3986-1.3.2-py2.py3-none-any.whl", hash = "sha256:df4eba676077cefb86450c8f60121b9ae04b94f65f85b69f3f731af0516b7b18"},
     {file = "rfc3986-1.3.2.tar.gz", hash = "sha256:0344d0bd428126ce554e7ca2b61787b6a28d2bbd19fc70ed2dd85efe31176405"},
@@ -670,6 +686,10 @@ sortedcontainers = [
 soupsieve = [
     {file = "soupsieve-1.9.5-py2.py3-none-any.whl", hash = "sha256:bdb0d917b03a1369ce964056fc195cfdff8819c40de04695a80bc813c3cfa1f5"},
     {file = "soupsieve-1.9.5.tar.gz", hash = "sha256:e2c1c5dee4a1c36bcb790e0fabd5492d874b8ebd4617622c4f6a731701060dda"},
+]
+tqdm = [
+    {file = "tqdm-4.40.0-py2.py3-none-any.whl", hash = "sha256:c0ffb55959ea5f3eaeece8d2db0651ba9ced9c72f40a6cce3419330256234289"},
+    {file = "tqdm-4.40.0.tar.gz", hash = "sha256:156a0565f09d1f0ef8242932a0e1302462c93827a87ba7b4423d90f01befe94c"},
 ]
 trio = [
     {file = "trio-0.13.0-py3-none-any.whl", hash = "sha256:a6d83c0cb4a177ec0f5179ce88e27914d5c8e6fd01c4285176b949e6ddc88c6c"},

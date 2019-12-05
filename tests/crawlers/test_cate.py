@@ -29,12 +29,19 @@ import pytest
 from blocked_domain_generator.crawlers.cate import MoreSiteCrawler
 
 
+def patch_more_site_crawler(crawler: MoreSiteCrawler) -> MoreSiteCrawler:
+    crawler.node_tuple_lst = crawler.node_tuple_lst[:10]
+    crawler.total = 10
+    crawler.pbar.total = 10
+
+    return crawler
+
+
 @pytest.mark.second
 @pytest.mark.trio
 async def test_indirect_crawler(request):
     extract = request.config.cache.get("index", {})
-    more_site_crawler = MoreSiteCrawler(extract)
-    more_site_crawler.node_tuple_lst = more_site_crawler.node_tuple_lst[:10]
+    more_site_crawler = patch_more_site_crawler(MoreSiteCrawler(extract))
     await more_site_crawler.load_website()
     more_site_crawler.parse()
     records = more_site_crawler.to_records()

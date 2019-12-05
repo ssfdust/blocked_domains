@@ -29,6 +29,7 @@ from bs4 import Tag, BeautifulSoup
 
 from blocked_domain_generator.parsers.base import BaseParser
 from blocked_domain_generator import const
+from blocked_domain_generator.utils import drop_schema
 
 
 class SiteParser(BaseParser):
@@ -78,4 +79,4 @@ class TargetSiteParser(BaseParser):
         if self.bs4 is None:
             self.init_parser()
         node = self.bs4.find(const.DIV_TAG, "favicon-bar-addressbar")
-        self.extract = node.a.attrs["title"]
+        self.extract = drop_schema(node.a.attrs["title"])

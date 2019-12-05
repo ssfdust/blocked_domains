@@ -26,7 +26,7 @@
 """
 import pytest
 
-from blocked_domain_generator.utils import trim_dot, combine_set, difference_set, chunks
+from blocked_domain_generator.utils import trim_dot, combine_set, difference_set, chunks, drop_schema
 
 
 @pytest.mark.parametrize(
@@ -63,3 +63,14 @@ def test_chunks():
                                      [50, 51, 52, 53, 54, 55, 56, 57, 58, 59],
                                      [60, 61, 62, 63, 64, 65, 66, 67, 68, 69],
                                      [70, 71, 72, 73, 74]]
+
+
+@pytest.mark.parametrize(
+    "url, domain",
+    [
+        ("https://www.baidu.com", "www.baidu.com"),
+        ("http://www.baidu.com", "www.baidu.com"),
+    ],
+)
+def test_drop_schema(url, domain):
+    assert drop_schema(url) == domain

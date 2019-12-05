@@ -34,6 +34,7 @@ from typing import List
 
 import trio
 import httpx
+import tqdm
 
 from httpx.concurrency.trio import TrioBackend
 from httpx.exceptions import ConnectTimeout, ReadTimeout
@@ -42,6 +43,7 @@ from httpx.config import PoolLimits, TimeoutConfig
 from h2.exceptions import StreamClosedError
 
 from trio._core._run import NurseryManager
+from trio._channel import MemorySendChannel, MemoryReceiveChannel
 from loguru import logger
 from blocked_domain_generator.const import (
     RequestState,
@@ -56,7 +58,7 @@ FORMAT = (
     "| <lvl>{level}</lvl> | <lvl>{message}</lvl>"
 )
 logger.remove()
-logger.add(sys.stdout, format=FORMAT, level="INFO")
+logger.add(sys.stdout, format=FORMAT, level="WARNING")
 
 limit = trio.CapacityLimiter(4)
 
@@ -91,6 +93,12 @@ class Crawler:
                 # at the same time
                 await trio.sleep(secrets.randbelow(1000) / 1000)
                 await self._retry_loop(client)
+
+    async def load_website_with_sender(self, send_channel):
+        async with send_channel:
+            await self.load_website()
+            logger.debug("Send Finish Signal")
+            await send_channel.send("Finish")
 
     async def _retry_loop(self, client: httpx.Client):
         for _ in range(0, MAX_TRIES):
@@ -138,11 +146,33 @@ class NameCrawler(Crawler):
 
 class MultiCrawler:
     def __init__(self, crawlers: List[Crawler] = None):
-        self.crawlers = crawlers if crawlers else {}
+        self.crawlers = crawlers if crawlers else []
+        self.send_channel: MemorySendChannel = None
+        self.receive_channel: MemoryReceiveChannel = None
+        self.total = len(self.crawlers)
+        self.pbar = tqdm.tqdm(total=self.total)
+        self.finished = 0
 
     async def load_website(self):
         async with trio.open_nursery() as nursery:
-            self._start_loop(nursery)
+            self.send_channel, self.receive_channel = trio.open_memory_channel(0)
+            await self._start_loop(nursery)
+            nursery.start_soon(self._receive_finish)
 
-    def _start_loop(self, nursery: NurseryManager):
+    async def _receive_finish(self):
+        receive_channel = self.receive_channel.clone()
+        async with receive_channel:
+            async for _ in receive_channel:
+                self._update_state()
+                if self.finished == self.total:
+                    break
+            self.pbar.close()
+
+    def _update_state(self):
+        self.finished += 1
+        self.pbar.update(1)
+        logger.debug("{} / {}".format(self.pbar.last_print_n, self.pbar.total))
+        logger.debug(f"{self.finished} / {self.total}")
+
+    async def _start_loop(self, nursery: NurseryManager):
         raise NotImplementedError  # pragma: no cover
