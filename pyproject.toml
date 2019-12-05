@@ -13,7 +13,7 @@ httpx = { git = "https://github.com/encode/httpx.git", branch = "master" }
 tqdm = "^4.40.0"
 
 [tool.poetry.scripts]
-block_generator = "blocked_domain_generator.__main__"
+block_generator = "blocked_domain_generator.__main__:main"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

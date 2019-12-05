@@ -25,7 +25,6 @@
     测试组件模块
 """
 import pytest
-import os
 
 from blocked_domain_generator.utils import (
     trim_dot,
