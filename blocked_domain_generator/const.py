@@ -92,3 +92,7 @@ class BlockListFiles:
         "felix-fly/v2ray-dnsmasq-dnscrypt/"
         "master/config/ad_blank.conf"
     )
+    porn_list = (
+        "https://github.com/Bon-Appetit/"
+        "porn-domains/raw/master/domains.txt"
+    )

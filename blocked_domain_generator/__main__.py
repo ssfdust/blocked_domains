@@ -29,8 +29,8 @@ from loguru import logger
 from .crawlers.index import IndexCrawler
 from .crawlers.cate import MoreSiteCrawler
 from .crawlers.sites import SiteListCrawler
-from .crawlers.ads import get_combine_crawler
-from .const import PORNDUDE
+from .crawlers.ads import get_combine_crawler, FileCrawler
+from .const import PORNDUDE, BlockListFiles
 from .utils import chunks, get_dist_path, dump_to_dist
 
 
@@ -48,6 +48,13 @@ async def start_site_crawler(records) -> Set:
 
     return urls
 
+async def start_download_pronlist() -> Set:
+    logger.warning("开始下载PornList")
+    porn_crawler = FileCrawler(BlockListFiles.porn_list)
+    await porn_crawler.load_website()
+    porn_crawler.parse()
+    return porn_crawler.extract
+
 
 async def start_adult_crawler() -> Set:
     logger.warning("开始爬取主页")
@@ -61,7 +68,11 @@ async def start_adult_crawler() -> Set:
     more_sites_crawler.parse()
     records = more_sites_crawler.to_records()
 
-    return await start_site_crawler(records)
+    records = await start_site_crawler(records)
+    porn_lst_records = await start_download_pronlist()
+    records = records | porn_lst_records
+
+    return records
 
 
 async def start_ads_crawler() -> Set:
